@@ -1,0 +1,224 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf8">
+    <link rel="stylesheet" href="./v5.3.0-dist/ol.css" type="text/css">
+    <script src="./jquery.min.js"></script>
+    <script src='./interploateHelper.js'></script>
+    <script src="./GridDataDrawing.js"></script>
+    <script src="./turf/turf.min.js"></script>
+    <style>
+      .map {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+    <script src="./v5.3.0-dist/ol.js"></script>
+    <title>Webgis 组件库 ----- 色斑图</title>
+  </head>
+  <body>
+    <canvas id="imgLayer" width="320" height="320" style="visibility:hidden;position:absolute;z-index:-999;"></canvas>
+    <div id="map" class="map"></div>
+    <script>
+      var maxLat = 39.1;
+      var minLat = 38.5;
+      var maxLon = 117.3;
+      var minLon = 116.6;
+      var delxnum = 320; // 326;
+      var delynum = 320; // 274;
+      var imageBounds=[
+        minLon,minLat,maxLon,maxLat
+      ]
+      var projection = ol.proj.get('EPSG:4326');//设置坐标系    
+    </script>
+    <script type="text/javascript">
+      var map = new ol.Map({
+        target: 'map',
+        layers: [
+          new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                url: "http://t4.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=0d6be829a5a1bc05f5b3c0265720da4c"
+            }),
+            //projection: 'EPSG:4326'
+            zIndex: 1
+          }),
+
+          new ol.layer.Vector({
+            title: 'add Layer',
+            source: new ol.source.Vector({
+                projection: 'EPSG:4326',
+                url: "./jh.json", //GeoJSON的文件路径，用户可以根据需求而改变
+                format: new ol.format.GeoJSON()
+            }),
+            zIndex: 2
+/*             style:  new ol.style.Style({
+                fill: new ol.style.Fill({
+                    color: "yellow"
+                }),
+                stroke: new ol.style.Stroke({
+                    color: "red",
+                    width: 2
+                })
+            }) */
+          }),
+/*           new ol.layer.Image({
+              source: new ol.source.ImageStatic({
+                url: 'http://129.211.63.193/test.png',//这里添加静态图片的地址
+                projection: projection,
+                imageExtent: imageBounds
+              })
+            }), */
+          new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                url: "http://t4.tianditu.gov.cn/DataServer?T=cia_w&x={x}&y={y}&l={z}&tk=0d6be829a5a1bc05f5b3c0265720da4c"
+            }),
+            zIndex: 4
+            //projection: 'EPSG:4326'
+          })
+        ],
+        view: new ol.View({
+          center: [116.96754455566406, 38.84948727674782],
+          projection: projection,
+          zoom: 10,
+          minZoom: 4,
+          maxZoom: 18
+        }),
+        controls: ol.control.defaults()
+      });
+      map.on('click', function(e) {
+        console.log(e.coordinate)
+      })
+    </script>    
+    <script>
+      var region_jinghai;
+      var colorMap = [
+          [0, 10, [163, 214, 207]],
+          [10, 20, [163, 214, 207]],
+          [20, 30, [165, 196, 235]],
+          [30, 40, [143, 181, 232]],
+          [40, 50, [132, 174, 230]],
+          [50, 60, [101, 154, 225]],
+          [60, 70, [85, 131, 209]],
+          [70, 80, [21, 51, 150]],
+          [80, 100, [0, 15, 80]]
+      ];
+      function convertCanvasToImage(canvas) {
+        var image = new Image();
+        image.src = canvas.toDataURL("image/png");
+        return image;
+      }
+
+      function CreateGridXY_Num(Xlb, Ylb, Xrt, Yrt, Xnum, Ynum) {
+        var refX = new Float32Array(Xnum);
+        var refY = new Float32Array(Ynum);
+        var num = (Xrt - Xlb) / parseFloat(Xnum);
+        var num2 = (Yrt - Ylb) / parseFloat(Ynum);
+        for (var i = 0; i < Xnum; i++) {
+            refX[i] = Xlb + i * num;
+        }
+        for (var i = 0; i < Ynum; i++) {
+            refY[Ynum - 1 - i] = Ylb +
+                i * num2;
+        }
+        return [refX, refY];
+      }
+      var canvas = document.getElementById("imgLayer");
+      var ctx = canvas.getContext('2d');
+      var layer_surface;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if(layer_surface){
+        map.removeLayer(layer_surface);
+        layer_surface=null;
+      }
+      var gridArray = CreateGridXY_Num(minLon, minLat, maxLon, maxLat, delxnum, delynum);
+      var latArray = [];
+      var lonArray = [];
+      var valueArray = [];
+      $.getJSON('./jh.json', function (data) {
+        region_jinghai = data;
+        $.getJSON('./water.json', function (values) {
+          var observe_data = values.observe_data;
+          for (let i=0; i<observe_data.length; i++) {
+            let element = observe_data[i]
+            if (element.lat <= maxLat && element.lat >= minLat && element.lon <= maxLon && element.lon >=
+                minLon) {
+                  latArray.push(element.lat);
+                  lonArray.push(element.lon);
+                  valueArray.push(element.value);
+                }
+          }
+          var gridValueArray = Interpolate.Interpolation_IDW_Neighbor([lonArray, latArray, valueArray],
+            gridArray[0], gridArray[1], 3, region_jinghai);
+          var bmpImg = GridDataDrawing.getBmp(gridValueArray.reverse(), colorMap);
+          img = new Image();
+          img.src = bmpImg.imageUrl;
+          img.onload = function () {
+            ctx.drawImage(img, 0, 0, delxnum, delynum);
+            img_surface =convertCanvasToImage(canvas);
+            layer_surface = new ol.layer.Image({
+              source: new ol.source.ImageStatic({
+                url: img.src,//这里添加静态图片的地址
+                projection: projection,
+                imageExtent: imageBounds
+              })
+            })
+            
+            map.addLayer(layer_surface);
+            layer_surface.setZIndex(2);
+
+            // 叠加站点值
+            var features = [];
+            var labelStyle = new ol.style.Style({
+              text: new ol.style.Text({
+                font: '12px Calibri,sans-serif',
+                overflow: true,
+                fill: new ol.style.Fill({
+                  color: '#000'
+                }),
+                stroke: new ol.style.Stroke({
+                  color: '#fff',
+                  width: 3
+                })
+              })
+            })
+            for (var i = 0; i < observe_data.length; i++) {
+              var item = observe_data[i];
+              var longitude = item.lon;
+              var latitude = item.lat;
+              var value = item.value;
+              console.log(longitude, latitude)
+              var iconFeature = new ol.Feature({
+                  geometry: new ol.geom.Point([longitude, latitude]),
+              });
+              console.log(iconFeature)
+              iconFeature.setStyle(new ol.style.Style({
+                  text: new ol.style.Text({
+                        font: '15px Microsoft YaHei',
+                        text: value,
+                        fill: new ol.style.Fill({
+                              color: 'red'
+                        }),
+                        stroke: new ol.style.Stroke({
+                            color: '#fff',
+                            width: 2
+                        })
+                    })
+              }));
+             
+              features.push(iconFeature);
+            }
+            var vectorSource = new ol.source.Vector({
+              features: features
+            });
+            var vectorLayer = new ol.layer.Vector({
+                source: vectorSource
+            });
+            vectorLayer.setZIndex(6);
+            map.addLayer(vectorLayer);
+          }
+        });
+      });
+    </script>
+
+  </body>
+</html>

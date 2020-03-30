@@ -1,0 +1,70 @@
+{
+  "name": "jing-fe",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "start": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "amfe-flexible": "^2.2.1",
+    "axios": "^0.18.0",
+    "core-js": "^2.6.5",
+    "echarts": "^4.2.1",
+    "jquery": "^3.4.1",
+    "js-base64": "^2.5.1",
+    "less-loader": "^5.0.0",
+    "lib-flexible": "^0.3.2",
+    "node-sass": "^4.12.0",
+    "pdfjs-dist": "^2.0.943",
+    "postcss-px2rem": "^0.3.0",
+    "vue": "^2.6.10",
+    "vue-router": "^3.0.6",
+    "vux": "^2.9.4",
+    "weixin-js-sdk": "^1.4.0-test"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.7.0",
+    "@vue/cli-plugin-eslint": "^3.7.0",
+    "@vue/cli-service": "^3.7.0",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.16.0",
+    "eslint-plugin-vue": "^5.0.0",
+    "file-loader": "^3.0.1",
+    "for-own": "^1.0.0",
+    "node-sass": "^4.12.0",
+    "px2rem-loader": "^0.1.9",
+    "sass": "^1.20.1",
+    "sass-loader": "^7.1.0",
+    "shallow-clone": "^3.0.1",
+    "url-loader": "^1.1.2",
+    "vue-loader": "^14.2.2",
+    "vue-template-compiler": "^2.5.21",
+    "vux-loader": "^1.2.9"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "rules": {},
+    "parserOptions": {
+      "parser": "babel-eslint"
+    }
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions"
+  ]
+}

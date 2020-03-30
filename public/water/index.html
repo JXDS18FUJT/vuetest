@@ -1,0 +1,358 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf8">
+    <link rel="stylesheet" href="./v5.3.0-dist/ol.css" type="text/css">
+    <script src="./jquery.min.js"></script>
+    <script src='./interploateHelper.js'></script>
+    <script src="./GridDataDrawing.js"></script>
+    <script src="./turf/turf.min.js"></script>
+    <style>
+      .map {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+    <script src="./v5.3.0-dist/ol.js"></script>
+    <title>静海降水色斑图</title>
+  </head>
+  <body>
+    <canvas id="imgLayer" width="320" height="320" style="visibility:hidden;position:absolute;z-index:-999;"></canvas>
+    <div id="map" class="map" style="width: 100%; height:875px"></div>
+    <script>
+      var initData = '{"observe_time":"2019-06-27 10:00:00","observe_data":[{"stationName":"独流","lon":"116.912","lat":"39.047","value":"45"},{"stationName":"子牙","lon":"116.789","lat":"38.957","value":"55"},{"stationName":"双塘","lon":"116.902","lat":"38.872","value":"65"},{"stationName":"团泊","lon":"117.159","lat":"38.902","value":"60"},{"stationName":"陈官屯","lon":"116.877","lat":"38.796","value":"50"},{"stationName":"西翟庄","lon":"117.004","lat":"38.773","value":"20"},{"stationName":"良王庄","lon":"116.968","lat":"39.023","value":"15"},{"stationName":"王口镇","lon":"116.770","lat":"38.933","value":"30"},{"stationName":"大丰堆","lon":"117.011","lat":"38.899","value":"25"},{"stationName":"杨成庄","lon":"117.046","lat":"38.944","value":"20"},{"stationName":"大邱庄","lon":"117.068","lat":"38.856","value":"100"},{"stationName":"中旺","lon":"117.091","lat":"38.648","value":"70"},{"stationName":"梁头","lon":"116.861","lat":"38.941","value":"65"},{"stationName":"沿庄","lon":"116.9","lat":"39.0","value":"78"},{"stationName":"台头","lon":"116.752","lat":"38.798","value":"66"},{"stationName":"蔡公庄","lon":"117.063","lat":"38.781","value":"40"},{"stationName":"唐官屯","lon":"116.879","lat":"38.681","value":"45"},{"stationName":"静海镇","lon":"116.917","lat":"38.917","value":"90"}]}';
+      var maxLat = 39.1;
+      var minLat = 38.5;
+      var maxLon = 117.3;
+      var minLon = 116.6;
+      var delxnum = 320; // 326;
+      var delynum = 320; // 274;
+      var imageBounds=[
+        minLon,minLat,maxLon,maxLat
+      ]
+      var projection = ol.proj.get('EPSG:4326');//设置坐标系    
+    </script>
+    
+    <script type="text/javascript">
+      var stationLMap = {}
+      var elementType;
+      function GetQueryString(name) {
+        var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if(r!=null)return  unescape(r[2]); return null;
+      }
+      elementType = GetQueryString('type')
+      var map = new ol.Map({
+        target: 'map',
+        layers: [
+          new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                url: "http://t4.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=0d6be829a5a1bc05f5b3c0265720da4c"
+            }),
+            //projection: 'EPSG:4326'
+            zIndex: 1
+          }),
+
+          new ol.layer.Vector({
+            title: 'add Layer',
+            source: new ol.source.Vector({
+                projection: 'EPSG:4326',
+                url: "./jh.json", //GeoJSON的文件路径，用户可以根据需求而改变
+                format: new ol.format.GeoJSON()
+            }),
+            zIndex: 2
+/*             style:  new ol.style.Style({
+                fill: new ol.style.Fill({
+                    color: "yellow"
+                }),
+                stroke: new ol.style.Stroke({
+                    color: "red",
+                    width: 2
+                })
+            }) */
+          }),
+/*           new ol.layer.Image({
+              source: new ol.source.ImageStatic({
+                url: 'http://129.211.63.193/test.png',//这里添加静态图片的地址
+                projection: projection,
+                imageExtent: imageBounds
+              })
+            }), */
+          new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                url: "http://t4.tianditu.gov.cn/DataServer?T=cia_w&x={x}&y={y}&l={z}&tk=0d6be829a5a1bc05f5b3c0265720da4c"
+            }),
+            zIndex: 4
+            //projection: 'EPSG:4326'
+          })
+        ],
+        view: new ol.View({
+          center: [116.96754455566406, 38.84948727674782],
+          projection: projection,
+          zoom: 10,
+          minZoom: 4,
+          maxZoom: 18
+        }),
+        controls: ol.control.defaults()
+      });
+      map.on('click', function(e) {
+        console.log(e.coordinate)
+      })
+    </script>    
+    <script>
+      initData = JSON.parse(initData)
+      initData.observe_data.forEach(item => {
+          stationLMap[item.stationName] = item;
+      })
+      var region_jinghai;
+      if (elementType == 'TEM') {
+        var colorMap = [
+            [-100, -30, [0, 0, 255]],
+            [-30, -28, [0,20,255]],
+            [-28, -26, [0,68,255]],
+            [-26, -24, [0,102,255]],
+            [-24,-22 [0,132,255]],
+            [-22, -20, [0,166,255]],
+            [-20, -18, [0,200,255]],
+            [-18, -16, [0,234,255]],
+            [-16, -14, [0,255,247]],
+            [-14, -12, [0,255,212]],
+            [-12, -10, [0,255,179]],
+            [-10, -8, [0,255,144]],
+            [-8, -6, [0,255,115]],
+            [-6, -4, [0,255,81]],
+            [-4, -2, [0,255,47]],
+            [-2, 0, [0,255,13]],
+            [0, 2, [17,255,0]],
+            [2, 4, [51,255,0]],
+            [4, 6, [85,255,0]],
+            [6, 8, [119,255,0]],
+            [8, 10, [149,255,0]],
+            [10, 12, [183,255,0]],
+            [12, 14, [217,255,0]],
+            [14, 16, [251,255,0]],
+            [16, 18, [255,229,0]],
+            [18, 20, [255,195,0]],
+            [20, 22, [255,162,0]],
+            [22, 24, [255,128,0]],
+            [24, 26, [255,98,0]],
+            [26, 28, [255,64,0]],
+            [28, 30, [255,45,0]],
+            [30, 32, [255,35,0]],
+            [32, 35, [255,20,0]],
+            [35, 100, [255,0,0]],
+        ];
+
+      } else if (elementType == 'RHU') {
+        var colorMap = [
+            [0, 10, [231, 0, 0]],
+            [10, 20, [252,38,3]],
+            [20, 30, [245, 78, 21]],
+            [30, 40, [247, 248, 211]],
+            [40, 50, [236, 251, 200]],
+            [50, 60, [66, 72, 199]],
+            [60, 70, [83, 62, 181]],
+            [70, 80, [70, 33, 163]],
+            [90, 100, [51, 13, 127]],
+        ];
+      } else if (elementType == 'WIN_S_Max') {
+        var colorMap = [
+            [0, 2.5, [0, 152, 254]],
+            [2.5, 5.5, [0, 102, 253]],
+            [5.5, 7.5, [47, 153, 0]],
+            [7.5, 10.5, [38, 254, 2]],
+            [10.5, 13.9, [209, 253, 8]],
+            [13.9, 18, [250, 252, 1]],
+            [18, 22, [241, 210, 46]],
+            [22, 24.5, [249, 154, 2]],
+            [24.5, 30, [221, 195, 194]],
+            [30, 35, [202, 148, 100]],
+            [35, 37, [143, 74, 67]],
+            [37, 42, [253, 51, 51]],
+            [42, 46, [208, 57, 57]],
+            [46, 51, [177, 55, 55]],
+            [51, 55, [177, 51, 177]],
+            [55, 60, [221, 55, 224]],
+            [60, 1000, [241, 55, 224]],
+        ];
+          
+      } else if (elementType == 'PRS') {
+        var colorMap = [
+            [0, 960, [84, 64, 181]],
+            [960, 975, [66, 72, 199]],
+            [975, 978, [77, 102, 209]],
+            [978, 980, [87, 117, 212]],
+            [980, 984, [79, 150, 223]],
+            [984, 986, [131, 184, 250]],
+            [986, 988, [115, 224, 230]],
+            [988, 993, [170, 245, 233]],
+            [993, 995, [202, 250, 217]],
+            [995, 998, [237, 252, 201]],
+            [998, 1002, [247, 248, 211]],
+            [1002, 1004, [251, 241, 171]],
+            [1004, 1006, [252, 226, 124]],
+            [1006, 1011, [250, 198, 100]],
+            [1011, 1016, [249, 165, 68]],
+            [1016, 10000, [249, 144, 1]],
+        ];
+          
+      } else if (elementType == 'PRE_1h') {
+        var colorMap = [
+            [1, 1.5, [166, 242, 143]],
+            [1.6, 6.9, [61,186,61]],
+            [7, 14.9, [97, 184, 255]],
+            [15, 39.9, [0, 0, 255]],
+            [40, 49.9, [250, 0, 250]],
+            [50, 1000, [128, 0, 64]],
+        ];
+      } else if (elementType == 'PRE_3h') {
+        var colorMap = [
+            [1, 2.9, [166, 242, 143]],
+            [3, 9.9, [61,186,61]],
+            [10, 19.9, [97, 184, 255]],
+            [20, 49.9, [0, 0, 255]],
+            [50, 69.9, [250, 0, 250]],
+            [70, 1000, [128, 0, 64]],
+        ];
+      } else if (elementType == 'PRE_6h') {
+        var colorMap = [
+            [1, 3.9, [166, 242, 143]],
+            [4, 12.9, [61,186,61]],
+            [13, 24.9, [97, 184, 255]],
+            [25, 59.9, [0, 0, 255]],
+            [60, 119.9, [250, 0, 250]],
+            [120, 1000, [128, 0, 64]],
+        ];
+      } else if (elementType == 'PRE_12h') {
+        var colorMap = [
+            [1, 4.9, [166, 242, 143]],
+            [5, 14.9, [61,186,61]],
+            [15, 29.9, [97, 184, 255]],
+            [30, 69.9, [0, 0, 255]],
+            [70, 139.9, [250, 0, 250]],
+            [140, 1000, [128, 0, 64]],
+        ];
+      }
+
+      function convertCanvasToImage(canvas) {
+        var image = new Image();
+        image.src = canvas.toDataURL("image/png");
+        return image;
+      }
+
+      function CreateGridXY_Num(Xlb, Ylb, Xrt, Yrt, Xnum, Ynum) {
+        var refX = new Float32Array(Xnum);
+        var refY = new Float32Array(Ynum);
+        var num = (Xrt - Xlb) / parseFloat(Xnum);
+        var num2 = (Yrt - Ylb) / parseFloat(Ynum);
+        for (var i = 0; i < Xnum; i++) {
+            refX[i] = Xlb + i * num;
+        }
+        for (var i = 0; i < Ynum; i++) {
+            refY[Ynum - 1 - i] = Ylb +
+                i * num2;
+        }
+        return [refX, refY];
+      }
+      var canvas = document.getElementById("imgLayer");
+      var ctx = canvas.getContext('2d');
+      var layer_surface;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if(layer_surface){
+        map.removeLayer(layer_surface);
+        layer_surface=null;
+      }
+      var gridArray = CreateGridXY_Num(minLon, minLat, maxLon, maxLat, delxnum, delynum);
+      var latArray = [];
+      var lonArray = [];
+      var valueArray = [];
+      $.getJSON('./jh.json', function (data) {
+        region_jinghai = data;
+        $.getJSON('http://129.211.63.193/jh/public/live/stationInfo?type='+elementType, function (values) {
+          var observe_data = values.observe_data;
+          for (let i=0; i<observe_data.length; i++) {
+            let element = observe_data[i]
+            element.lat = stationLMap[element.stationName].lat;
+            element.lon = stationLMap[element.stationName].lon;
+            if (element.lat <= maxLat && element.lat >= minLat && element.lon <= maxLon && element.lon >=
+                minLon) {
+                  latArray.push(element.lat);
+                  lonArray.push(element.lon);
+                  valueArray.push(element.value);
+                }
+          }
+          var gridValueArray = Interpolate.Interpolation_IDW_Neighbor([lonArray, latArray, valueArray],
+            gridArray[0], gridArray[1], 3, region_jinghai);
+          var bmpImg = GridDataDrawing.getBmp(gridValueArray.reverse(), colorMap);
+          img = new Image();
+          img.src = bmpImg.imageUrl;
+          img.onload = function () {
+            ctx.drawImage(img, 0, 0, delxnum, delynum);
+            img_surface =convertCanvasToImage(canvas);
+            layer_surface = new ol.layer.Image({
+              source: new ol.source.ImageStatic({
+                url: img.src,//这里添加静态图片的地址
+                projection: projection,
+                imageExtent: imageBounds
+              })
+            })
+            
+            map.addLayer(layer_surface);
+            layer_surface.setZIndex(2);
+
+            // 叠加站点值
+            var features = [];
+            var labelStyle = new ol.style.Style({
+              text: new ol.style.Text({
+                font: '12px Calibri,sans-serif',
+                overflow: true,
+                fill: new ol.style.Fill({
+                  color: '#000'
+                }),
+                stroke: new ol.style.Stroke({
+                  color: '#fff',
+                  width: 3
+                })
+              })
+            })
+            for (var i = 0; i < observe_data.length; i++) {
+              var item = observe_data[i];
+              var longitude = item.lon;
+              var latitude = item.lat;
+              var value = item.value;
+              console.log(longitude, latitude)
+              var iconFeature = new ol.Feature({
+                  geometry: new ol.geom.Point([longitude, latitude]),
+              });
+              console.log(iconFeature)
+              iconFeature.setStyle(new ol.style.Style({
+                  text: new ol.style.Text({
+                        font: '15px Microsoft YaHei',
+                        text: value,
+                        fill: new ol.style.Fill({
+                              color: 'red'
+                        }),
+                        stroke: new ol.style.Stroke({
+                            color: '#fff',
+                            width: 2
+                        })
+                    })
+              }));
+             
+              features.push(iconFeature);
+            }
+            var vectorSource = new ol.source.Vector({
+              features: features
+            });
+            var vectorLayer = new ol.layer.Vector({
+                source: vectorSource
+            });
+            vectorLayer.setZIndex(6);
+            map.addLayer(vectorLayer);
+          }
+        });
+      });
+    </script>
+
+  </body>
+</html>

@@ -1,0 +1,345 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0 user-scalable=no" /><meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" /><meta name="renderer" content="webkit|ie-comp|ie-stand" /><meta name="Keywords" content="台风,台风网,台风路径实时发布系统,台风路径,实时路径,台风实时路径,浙江台风,浙江台风网,实时台风路径,浙江省台风路径,浙江省台风路径实时发布系统,实时台风路径系统,浙江省水利台风系统,水利厅台风系统,浙江省水利厅台风系统,最新台风信息,最新台风" /><meta name="description" content="台风路径实时发布系统是由浙江省水利厅、浙江省水利信息管理中心主办的台风信息发布系统,系统提供最新最全的台风信息和台风路径,可及时准确地提供台风的实时信息、预报信息和历史信息,系统同时整合卫星云图、降雨等内容" /><title>
+	台风路径
+</title>
+    <script src="browser-supported.js" tppabs="http://typhoon.zjwater.gov.cn/javascript/browser-supported.js"></script>
+    <script src="jquery-1.8.3.min.js" tppabs="http://typhoon.zjwater.gov.cn/javascript/jquery-1.8.3.min.js"></script>
+    <link href="toastr.min.css" tppabs="http://typhoon.zjwater.gov.cn/javascript/toastr/toastr.min.css" rel="stylesheet" />
+    <script src="toastr.min.js" tppabs="http://typhoon.zjwater.gov.cn/javascript/toastr/toastr.min.js"></script>
+
+    <script language="javascript" type="text/javascript">
+        var year = '2019'; var thetime = '2019-05-30'; var MapUrl = 'http://webrd0{s}.is.autonavi.com/appmaptile?x={x}&y={y}&z={z}&lang=zh_cn&size=1&scale=1&style=8'; var MapSelectType='amap'; var MapTileTextUrl = ''; var SetTimeoutId; var AcitveResult; var HistroyResult;
+        var IsLogin = 'False';
+    </script>
+    <link rel="stylesheet" type="text/css" href="index.htm.css" tppabs="http://typhoon.zjwater.gov.cn/combres.axd/siteCss/-460444244/"/><script type="text/javascript" src="index.htm.js" tppabs="http://typhoon.zjwater.gov.cn/combres.axd/siteJs/1800001666/"></script>
+    <script src="corev3.js-v=1.7.js" tppabs="http://taifeng.oss-cn-hangzhou.aliyuncs.com/javascript/corev3.js?v=1.7"></script>
+    <script src="moaModal.minified.js" tppabs="http://typhoon.zjwater.gov.cn/javascript/moaModal-master/js/moaModal.minified.js"></script>
+    <script src="Sweefty.js" tppabs="http://typhoon.zjwater.gov.cn/javascript/moaModal-master/js/Sweefty.js"></script>
+    <link href="all.css" tppabs="http://typhoon.zjwater.gov.cn/javascript/iCheck-master/skins/all.css" rel="stylesheet" />
+    <!--[if lte IE 7]><style>.main{display:none;} .support-note .note-ie{display:block;}</style><![endif]-->
+    <!--Map Engine-->
+    <!--[if lte IE 8]>
+         <link href="lf.ie.css" tppabs="http://typhoon.zjwater.gov.cn/javascript/mapengine/lf.ie.css" rel="stylesheet" /><link href="draw.ie.css" tppabs="http://typhoon.zjwater.gov.cn/javascript/mapengine/draw/draw.ie.css" rel="stylesheet" />
+    <![endif]-->
+</head>
+<body>
+    <form method="post" action="http://typhoon.zjwater.gov.cn/default.aspx" id="form1" onsubmit="return false">
+<div class="aspNetHidden">
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="4czqOyRt0ginK7u39Nce3SHWx9eQ8k82tNrsu5gQaaYdqhdQsGnjGaTTQ2UlkxZ9S1uWEO9pZuBVCbE9sZjOxOeBFwg/IhNBFz9z/5XaOES0YHKLRnh7j9z15erL7qnGpabXZA==" />
+</div>
+
+        <div id="header">
+            <div class="top">
+                <div class="top-r">
+                    <div id="Refresh" style="float: left;">
+                        <img src="refresh.png" tppabs="http://typhoon.zjwater.gov.cn/images/refresh.png" style="width: 59px; margin-top: 8px; cursor: pointer;" alt="刷新" />
+                    </div>
+                    <div class="top-ico" id="CenterToPacific">
+                        <img src="icon02.png" tppabs="http://typhoon.zjwater.gov.cn/images/icon02.png" alt="西太平洋" />西太平洋
+                    </div>
+                    <div class="top-ico" id="LatLngLine">
+                        <img src="icon03.png" tppabs="http://typhoon.zjwater.gov.cn/images/icon03.png" alt="经纬度" />经纬度
+                    </div>
+                    <div class="top-ico" id="Measure">
+                        <img src="icon04.png" tppabs="http://typhoon.zjwater.gov.cn/images/icon04.png" alt="测距" />测距
+                    </div>
+                    <div class="top-ico" id="Clear">
+                        <img src="icon06.png" tppabs="http://typhoon.zjwater.gov.cn/images/icon06.png" alt="清除" />清除
+                    </div>                   
+                    <div class="top-ico" id="Help">
+                        <img src="icon08.png" tppabs="http://typhoon.zjwater.gov.cn/images/icon08.png" onclick="Help()" alt="留言" />留言
+                    </div>
+                    <img src="user.png" tppabs="http://typhoon.zjwater.gov.cn/images/user.png" class='user' id='UserLogin' alt='用户登录' />
+                </div>
+            </div>
+            <div class="top-bottom" id="marquee" style="width: 3000px;">
+                <div style='position: absolute; top: 35px; overflow: hidden; height: 21px; display: inline;' id="tfinfomarqueen"></div>
+            </div>
+        </div>
+        <div class="typhoonNameLabel"></div>
+        <div id="mapTypeSelect" style="position: fixed; z-index: 103; top: 65px; z-index: 10009">
+            &nbsp;<img src="traffic_01.png" tppabs="http://typhoon.zjwater.gov.cn/images/traffic_01.png" name='amap' onclick="MapTypeSet('amap');"/><img src="satellite_00.png" tppabs="http://typhoon.zjwater.gov.cn/images/satellite_00.png" name='amapsatelite' onclick="MapTypeSet('amapsatelite');"/>
+        </div>
+        <div id="map"></div>
+        <div class="lishi">
+            <div class="lishi-top1">
+                <div class="lishi-top">历史台风 <span>︿</span></div>
+                <input type="text" placeholder="请输入台风名称、编号" id="typeahead1" />
+                <div class="lishi-top2">
+                    <img id="back" src="back.png" tppabs="http://typhoon.zjwater.gov.cn/images/back.png" /><b></b>
+                </div>
+            </div>
+            <div class="lishi-main" style="background: none;">
+                <div style="height: 3px; background: #0099CC; clear: both;"></div>
+                <div style="height: 100px; width: 4px; background: #0099CC; float: left;"></div>
+                <div id="lishi-b" style="display: inline; position: absolute; z-index: 4;">
+                    <div class="LiShi" id="LiShi" style="height: 100px;">
+                        <div class="lastyear">
+                            &lt;<div id="lastyearDiv">2 0 1 4</div>
+                        </div>
+                        <div class="nextyear">
+                            &gt;<div id="nextyearDiv">2 0 1 4</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="height: 100px; width: 4px; background: #0099CC; float: right; position: absolute; right: 0;"></div>
+                <div style="height: 16px; background: #0099CC; position: absolute; bottom: 2px; width: 100%; z-index: 1;"></div>
+            </div>
+        </div>
+        <img src="Indent.png" tppabs="http://typhoon.zjwater.gov.cn/images/Indent.png" alt="" style="position: absolute; top: 56px; right: 285px; box-shadow: -2px 2px 1px #777; background: #777; z-index: 10001;" id="closebox" />
+        <div class="tf-box">
+            <div style="margin-bottom: -2px;">
+                <ul id="namelist" class="namelist">
+                    <!--台风名称标签--->
+                    <li class="namelist-select" style="width: 279px; text-align: left; line-height: 43px; font-weight: bold;">
+                        <img src="announce.gif" tppabs="http://typhoon.zjwater.gov.cn/images/announce.gif" style="vertical-align: -3px;" />&nbsp;&nbsp;<span id="nametab"></span>
+                    </li>
+                </ul>
+            </div>
+            <div class="tf-list">
+                <div id="tflistHidePanel" class="tf-list-head" style="border: 1px #E4E4E4 solid; width: 273px; border-radius: 4px; display: none;">
+                    <img src="fengn.png" tppabs="http://typhoon.zjwater.gov.cn/images/tfbox/fengn.png" alt="" style="float: left;" />
+                    <img id="fengn" src="switch_off.png" tppabs="http://typhoon.zjwater.gov.cn/images/switch_off.png" alt="0" align="middle" style="float: right; padding-right: 4px; cursor: pointer;" onclick="openSwitchCamera(this)" />
+                </div>
+                <div id="tflist">
+                    <table border="0" cellpadding="0" cellspacing="0" style="margin-top: 0;">
+                        <thead>
+                            <tr>
+                                <td style="padding-left: 0;">
+                                    <img src="fengn.png" tppabs="http://typhoon.zjwater.gov.cn/images/tfbox/fengn.png" alt="" style="float: left; position: absolute; left: 13px; padding-top: 2px;" />
+                                    <img src="box_table_title.png" tppabs="http://typhoon.zjwater.gov.cn/images/box_table_title.png" style="border: 0;" alt="" />
+                                </td>
+                            </tr>
+                        </thead>
+                    </table>
+                    <div style="overflow: hidden; height: 193px; margin: auto; width: 273px; border-bottom: 1px #ddd solid; border-right: 1px #ddd solid;">
+                        <table border="0" cellpadding="0" cellspacing="0">
+                            <tbody>
+                                <tr>
+                                    <td style="width: 220px; text-align: center;" id="tdnotf">
+                                        <img src="notyblank.png" tppabs="http://typhoon.zjwater.gov.cn/images/notyblank.png" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="tf-list" style="height: 44px; margin-bottom: 0;">
+                <div id="01" class="tf-list-head" style="border: 1px #E4E4E4 solid; width: 273px; border-radius: 4px;">
+                    <img src="yun.png" tppabs="http://typhoon.zjwater.gov.cn/images/tfbox/yun.png" alt="" style="float: left;" />
+                    
+                    <div id="DivCloud" style="float: right; padding-right: 4px; margin-right: 11px;">
+                        <img id="cl01" src="cl01-1.png" tppabs="http://typhoon.zjwater.gov.cn/images/cloud/cl01-1.png" alt="30" /><img id="cl02" src="cl02-1.png" tppabs="http://typhoon.zjwater.gov.cn/images/cloud/cl02-1.png" alt="1" /><img id="cl03" src="cl03-1.png" tppabs="http://typhoon.zjwater.gov.cn/images/cloud/cl03-1.png" alt="3" /><img id="cl04" src="cl04-1.png" tppabs="http://typhoon.zjwater.gov.cn/images/cloud/cl04-1.png" alt="6" />
+                    </div>
+                </div>
+            </div>
+            <div class="tf-list" style="height: 46px; margin-bottom: 0;" id="divrains">
+                <div id="02" class="tf-list-head" style="border: 1px #E4E4E4 solid; width: 273px; border-radius: 4px;">
+                    <img src="yu.png" tppabs="http://typhoon.zjwater.gov.cn/images/tfbox/yu.png" alt="" style="float: left;" />
+                    <span id="spanRainName" style="margin-right: 10px;"></span>
+                    <div id="raincloud" style="float: right; padding-right: 4px; margin-right: 11px;">
+                        
+                            <div style="float: left; margin-right: 7px; color: #0099CC; font-weight: 700;">未来</div>
+                            <img id="rc01" src="rc01-1.png" tppabs="http://typhoon.zjwater.gov.cn/images/raincloud/rc01-1.png" alt="24" /><img id="rc02" src="rc02-1.png" tppabs="http://typhoon.zjwater.gov.cn/images/raincloud/rc02-1.png" alt="48" /><img id="rc03" src="rc03-1.png" tppabs="http://typhoon.zjwater.gov.cn/images/raincloud/rc03-1.png" alt="72" />
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="set">
+            <div id="me_gutter">
+                <span class="me_backarrow"></span>
+                <div id="me_featurelist">
+                    <div class="me_feature">
+                        <i class="me_feature_icon_settings"></i>
+                        <span class="me_feature_title">设置</span>
+                        <i id="logout-i" class="me_feature_icon_logout"></i>
+                        <span id="logout-span" class="me_feature_title">退出</span>
+                        <span class="me_feature_caret"></span>
+                    </div>
+                </div>
+            </div>
+            <div id="me_wrapper">
+                <div class="me_header">设置</div>
+                <ul class="me_nav">
+                    <li class="cur">图源</li>
+                </ul>
+                <table class="me_ty">
+                    <tr>
+                        <td>
+                            <img src="google.png" tppabs="http://typhoon.zjwater.gov.cn/images/google.png" alt="" />&nbsp;&nbsp;<input type="radio" name="mapGroup" id="google" value="1" />&nbsp;&nbsp;谷歌地图&nbsp;&nbsp;&nbsp;&nbsp;<img src="amap.png" tppabs="http://typhoon.zjwater.gov.cn/images/amap.png" alt="" />&nbsp;&nbsp;<input type="radio" name="mapGroup" id="amap" value="2" />&nbsp;&nbsp;高德地图&nbsp;&nbsp;&nbsp;&nbsp;<img src="tianditu.png" tppabs="http://typhoon.zjwater.gov.cn/images/tianditu.png" alt="" />&nbsp;&nbsp;<input type="radio" name="mapGroup" id="tianditu" value="3" />&nbsp;&nbsp;天地图</td>
+                    </tr>
+                </table>
+                <div class="me_header"></div>
+                <ul class="me_nav">
+                    <li class="cur">降雨时间段</li>
+                </ul>
+                <table class="me_ty">
+                    <tr>
+                        <td>
+                            <input type="radio" name="rainGrpup" id="1h" value="1h" />&nbsp;&nbsp;1小时&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="rainGrpup" id="3h" value="3h" />&nbsp;&nbsp;3小时&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="rainGrpup" id="6h" value="6h" />&nbsp;&nbsp;6小时&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="rainGrpup" id="12h" value="12h" />&nbsp;&nbsp;12小时&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="rainGrpup" id="24h" value="24h" />&nbsp;&nbsp;24小时&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    </tr>
+                </table>
+                
+                <table class="me_ty">
+
+                    <tr>
+                        <td colspan="4">
+                            <a class="btn_blue" href="javascript:void(0);" id="SaveSetting">保 &nbsp;&nbsp;存</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="search-bar-panel" style="display: none;">
+            <ul>
+            </ul>
+        </div>
+        <!------登陆弹出-------->
+        <div id="loginmodal" class="block modal2" style="">
+            <button type="button" class="close">×</button>
+            <h2>Login</h2>
+            <p>
+                <label>UserName</label>
+                <input type="text" id="txtname" />
+            </p>
+            <p>
+                <label>Password</label>
+                <input type="password" id="txtpwd" />
+            </p>
+            <p>
+                <button name="submit" id="btnLogin">Login</button>
+            </p>
+        </div>
+
+        <div id="MeettingInfo">
+        </div>
+        <div id="legend_img">
+            <img src="tl.png" tppabs="http://typhoon.zjwater.gov.cn/images/tl.png" style="border: 0px;" id="showLegend" tabindex="1" />
+        </div>
+        <div id="legend"></div>
+    </form>
+    <!--图例-->
+    <div class="tuli" tabindex="1">
+        <div class="tuli-head">
+            图&nbsp;例
+        </div>
+        <div class="tuli-li">
+            <span>风圈</span>
+            <input id="chkCircle" type="checkbox" checked="checked" />
+        </div>
+
+        <div class="tuli-li">
+            <span>登陆点</span>
+            <input id="chkLand" type="checkbox" checked="checked" />
+        </div>
+        <div class="tuli-li">
+            <span>预报台</span>
+            <input id="chkForecast" type="checkbox" checked="checked" />
+        </div>
+        <ul>
+            <li>
+                <img src="forecast-01.png" tppabs="http://typhoon.zjwater.gov.cn/images/legend/forecast-01.png" alt="" />
+                中国
+            </li>
+            <li>
+                <img src="forecast-02.png" tppabs="http://typhoon.zjwater.gov.cn/images/legend/forecast-02.png" alt="" />
+                中国香港
+            </li>
+            <li>
+                <img src="forecast-03.png" tppabs="http://typhoon.zjwater.gov.cn/images/legend/forecast-03.png" alt="" />
+                日本
+            </li>
+            <li>
+                <img src="forecast-04.png" tppabs="http://typhoon.zjwater.gov.cn/images/legend/forecast-04.png" alt="" />
+                中国台湾
+            </li>
+            <li>
+                <img src="forecast-05.png" tppabs="http://typhoon.zjwater.gov.cn/images/legend/forecast-05.png" alt="" />
+                美国
+            </li>
+        </ul>
+        <div class="tuli-li" style="border-bottom-style: dashed;">
+            <span>台风等级</span>
+        </div>
+        <ul>
+            <li>
+                <img src="t-01.png" tppabs="http://typhoon.zjwater.gov.cn/images/legend/t-01.png" alt="" />
+                热带低压
+            </li>
+            <li>
+                <img src="t-02.png" tppabs="http://typhoon.zjwater.gov.cn/images/legend/t-02.png" alt="" />
+                热带风暴
+            </li>
+            <li>
+                <img src="t-03.png" tppabs="http://typhoon.zjwater.gov.cn/images/legend/t-03.png" alt="" />
+                强热带风暴
+            </li>
+            <li>
+                <img src="t-04.png" tppabs="http://typhoon.zjwater.gov.cn/images/legend/t-04.png" alt="" />
+                台风
+            </li>
+
+            <li>
+                <img src="t-05.png" tppabs="http://typhoon.zjwater.gov.cn/images/legend/t-05.png" alt="" />
+                强台风
+            </li>
+
+            <li>
+                <img src="t-06.png" tppabs="http://typhoon.zjwater.gov.cn/images/legend/t-06.png" alt="" />
+                超强台风
+            </li>
+        </ul>
+        <div class="tuli-li" style="border-bottom-style: dashed;">
+            <span>降雨等级</span>
+        </div>
+        <ul>
+            <li>
+                <img src="l_1.png" tppabs="http://typhoon.zjwater.gov.cn/images/raincloud/l_1.png" alt="" />
+                0-10
+            </li>
+            <li>
+                <img src="l_2.png" tppabs="http://typhoon.zjwater.gov.cn/images/raincloud/l_2.png" alt="" />
+                10-25
+            </li>
+            <li>
+                <img src="l_3.png" tppabs="http://typhoon.zjwater.gov.cn/images/raincloud/l_3.png" alt="" />
+                25-50
+            </li>
+            <li>
+                <img src="l_4.png" tppabs="http://typhoon.zjwater.gov.cn/images/raincloud/l_4.png" alt="" />
+                50-100
+            </li>
+            <li>
+                <img src="l_5.png" tppabs="http://typhoon.zjwater.gov.cn/images/raincloud/l_5.png" alt="" />
+                100-250
+            </li>
+            <li>
+                <img src="l_6.png" tppabs="http://typhoon.zjwater.gov.cn/images/raincloud/l_6.png" alt="" />
+                >250
+            </li>
+        </ul>
+    </div>
+</body>
+</html>
+<script type="text/javascript">
+    //图例
+    if ($("[name='yu']").attr("checked")) {
+        $("#ul-yu li span").css("display", "inline-block");
+    } else {
+        $("#ul-yu li span").hide();
+    }
+    $(".tf-list input[type='radio']").iCheck({
+        checkboxClass: 'icheckbox_square-blue',
+        radioClass: 'iradio_square-blue',
+        increaseArea: '20%' // optional
+    });
+    $(".tuli-li input[type='checkbox']").iCheck({
+        checkboxClass: 'icheckbox_flat-blue',
+        radioClass: 'iradio_flat-blue'
+    });
+</script>

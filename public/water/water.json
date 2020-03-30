@@ -1,0 +1,113 @@
+{
+    "observe_time": "2019-06-27 10:00:00",
+    "observe_data": [
+      {
+        "stationName": "独流",
+        "lon": "116.912",
+        "lat": "39.047",
+        "value": "45"
+      },
+      {
+        "stationName": "子牙",
+        "lon": "116.789",
+        "lat": "38.957",
+        "value": "55"
+      },
+      {
+        "stationName": "双塘",
+        "lon": "116.902",
+        "lat": "38.872",
+        "value": "65"
+      },
+      {
+        "stationName": "团泊",
+        "lon": "117.159",
+        "lat": "38.902",
+        "value": "60"
+      },
+      {
+        "stationName": "陈官屯",
+        "lon": "116.877",
+        "lat": "38.796",
+        "value": "50"
+      },
+      {
+        "stationName": "西翟庄",
+        "lon": "117.004",
+        "lat": "38.773",
+        "value": "20"
+      },
+      {
+        "stationName": "良王庄",
+        "lon": "116.968",
+        "lat": "39.023",
+        "value": "15"
+      },
+      {
+        "stationName": "王口镇",
+        "lon": "116.770",
+        "lat": "38.933",
+        "value": "30"
+      },
+      {
+        "stationName": "大丰堆",
+        "lon": "117.011",
+        "lat": "38.899",
+        "value": "25"
+      },
+      {
+        "stationName": "杨成庄",
+        "lon": "117.046",
+        "lat": "38.944",
+        "value": "20"
+      },
+      {
+        "stationName": "大邱庄",
+        "lon": "117.068",
+        "lat": "38.856",
+        "value": "100"
+      },
+      {
+        "stationName": "中旺",
+        "lon": "117.091",
+        "lat": "38.648",
+        "value": "70"
+      },
+      {
+        "stationName": "梁头",
+        "lon": "116.861",
+        "lat": "38.941",
+        "value": "65"
+      },
+      {
+        "stationName": "沿庄",
+        "lon": "116.9",
+        "lat": "39.0",
+        "value": "78"
+      },
+      {
+        "stationName": "台头",
+        "lon": "116.752",
+        "lat": "38.798",
+        "value": "66"
+      },
+      {
+        "stationName": "蔡公庄",
+        "lon": "117.063",
+        "lat": "38.781",
+        "value": "40"
+      },
+      {
+        "stationName": "唐官屯",
+        "lon": "116.879",
+        "lat": "38.681",
+        "value": "45"
+      },
+      {
+        "stationName": "静海镇",
+        "lon": "116.917",
+        "lat": "38.917",
+        "value": "90"
+      }
+    ]
+  }

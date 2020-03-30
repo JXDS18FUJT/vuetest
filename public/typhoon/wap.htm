@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1.0,user-scalable=no;" />
+    <meta name="Keywords" content="台风,台风路径,台风网,台风路径实时发布系统,台风路径,实时路径,台风实时路径,浙江台风,浙江台风网,实时台风路径,浙江省台风路径,浙江省台风路径实时发布系统,实时台风路径系统,浙江省水利台风系统,水利厅台风系统,浙江省水利厅台风系统,最新台风信息,最新台风" />
+    <title>台风路径</title>
+    <script src="jquery-1.8.3.min.js" tppabs="http://typhoon.zjwater.gov.cn/javascript/jquery-1.8.3.min.js"></script>
+    <link href="toastr.min.css" tppabs="http://typhoon.zjwater.gov.cn/javascript/toastr/toastr.min.css" rel="stylesheet" />
+    <script src="toastr.min.js" tppabs="http://typhoon.zjwater.gov.cn/javascript/toastr/toastr.min.js"></script>
+    <link href="style.css" tppabs="http://typhoon.zjwater.gov.cn/styles/icon/style.css" rel="stylesheet" />
+    <script src="jquery.marquee.min.js" tppabs="http://typhoon.zjwater.gov.cn/javascript/jquery.marquee.min.js"></script>
+	
+    <script src="wapcorev2.js-v=1.1.js" tppabs="http://taifeng.oss-cn-hangzhou.aliyuncs.com/javascript/wapcorev2.js?v=1.1"></script>
+    <link href="wapv2.css-v=1.1.css" tppabs="http://taifeng.oss-cn-hangzhou.aliyuncs.com/styles/wapv2.css?v=1.1" rel="stylesheet" />
+
+    <link href="wap.css" tppabs="http://typhoon.zjwater.gov.cn/styles/wap.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="typhoonNameLabel" tabindex="1"></div>
+    <div id="map"></div>
+    <img src="notf.png" tppabs="http://typhoon.zjwater.gov.cn/images/notf.png" alt="" style="position: fixed; left: 50%; margin-left: -125px; top: 30%; display: none;" id="notf" />
+    <div id="cloud-icon">
+        <i class="icon-cloud"></i>
+    </div>
+    <div id="tflist-icon" alt="hide">
+        <i class="icon-list"></i>
+    </div>
+    <div id="tfbox" style="display: none;">
+        <div class="tf-head">
+            <ul id="titleTab"></ul>
+            <div class="tflist-close">
+                <i class="icon-cross"></i>
+            </div>
+        </div>
+        <div class="tf-list" id="tflist">
+        </div>
+    </div>
+    <div class="top-bottom" style="width: 100%">
+        <div style='position: absolute; overflow: hidden; height:40px; display: inline;line-height: 40px;' id="tfinfomarqueen"></div>
+    </div>
+</body>
+</html>
